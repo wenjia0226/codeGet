@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta  charset="utf-8"  http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta  charset="utf-8"  name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 		<title></title>
 		<style type="text/css">
 			body{
@@ -30,8 +30,8 @@
 			}
 			.box {
 				width: 100%;
-				height: 80px;
-				line-height: 80px;
+				height: 40px;
+				line-height: 40px;
 				border: 1px solid lightgray;
 				border-radius: 8px;
 				padding-left: 8px;
@@ -46,7 +46,7 @@
 			.input-group > input {
 				display: block;
 				width: 100%;
-				line-height: 80px;
+				line-height: 40px;
 				border: 1px solid lightgray;
 				border-radius: 8px;
 				padding-left: 8px;
@@ -66,7 +66,6 @@
 				letter-spacing: 3px;
 				color: #fff;
 				
-			}
 		</style>
 		<!-- 引入样式 -->
 		<script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
@@ -116,46 +115,45 @@
 
 	<script type="text/javascript">
 		let schoolId, grade,classId,studentId;
-		$("#school").live('change',function(){
-		if(grade !== undefined) {
-			$('#grade option').attr('selected', '');
-			$('#classList > option').remove();
-			$('#studentList > option').remove();
-		}
-		});
-		$("#grade").live('change',function(){
-		if(schoolId == undefined) {
-			alert('请先选择学校')
-			return 
-		}
-		if(grade !== undefined) {
-			
-			$('#classList > option').remove();
-		}
-		// 如果班级不为空，先清空
-		if(classId !== undefined) {
-			$('#classList > option').remove();
-			$('#studentList > option').remove();
-		}
-		 grade = $('#grade option:selected').val();
-		this.getClassList(schoolId, grade);
-		});
-		$("#classList").live('change',function(){
-		
-		if(classId !== undefined) {
-			$('#studentList > option').remove();
-		}
-		if(studentId !== undefined) {
-			$('#studentList > option').remove();
-		}
-		 classId = $('#classList option:selected').val();
-		this.getStudentList(classId)
-		
-		});
-		$("#studentList").live('change',function(){
-			studentId = $('#studentList option:selected').val();
+		$('#school').change((() => {
+			schoolId = $('#school option:selected').val();
+			if(grade !== undefined) {
+				$('#grade option').attr('selected', '');
+				$('#classList > option').remove();
+				$('#studentList > option').remove();
+			}
+		}));
+		$('#grade').change((() => {
+			if(schoolId == undefined) {
+				alert('请先选择学校')
+				return 
+			}
+			if(grade !== undefined) {
+				
+				$('#classList > option').remove();
+			}
+			// 如果班级不为空，先清空
+			if(classId !== undefined) {
+				$('#classList > option').remove();
+				$('#studentList > option').remove();
+			}
+			 grade = $('#grade option:selected').val();
+			this.getClassList(schoolId, grade)
+		}));
+		$('#classList').change((() => {
+			if(classId !== undefined) {
+				$('#studentList > option').remove();
+			}
+			if(studentId !== undefined) {
+				$('#studentList > option').remove();
+			}
+			 classId = $('#classList option:selected').val();
+			this.getStudentList(classId)
+		}));
+		$('#studentList').change((() => {
+			 studentId = $('#studentList option:selected').val();
 			console.log(studentId)
-		});
+		}));
 		$('.btn').click((() => {
 			$.ajax({
 				type: 'post',
@@ -226,6 +224,7 @@
 		        	type: 'post',
 		            url : "https://www.guangliangkongjian.com/lightspace/xcx/allSchool",
 		            success : function(res) {
+						console.log(res)
 						var school = res.data;
 						for(var key in school) {
 							$('#school').append("<option value='" + school[key].id + "'>" + school[key].name + "</option>")
