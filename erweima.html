@@ -68,7 +68,8 @@
 				
 		</style>
 		<!-- 引入样式 -->
-		<script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<div class="index-container">
@@ -87,7 +88,7 @@
 			</div>
 			<div class="input-group">
 				<select id="grade" class="box">
-					<option>年级选择</option>
+					<option selected="selected">年级选择</option>
 					<option value="1">一年级</option>
 					<option value="2">二年级</option>
 					<option value="3">三年级</option>
@@ -121,6 +122,9 @@
 				$('#grade option').attr('selected', '');
 				$('#classList > option').remove();
 				$('#studentList > option').remove();
+				$('#grade option:first').prop("selected", 'selected');
+				$('#classList').append("<option>" + '班级选择' + "</option>")
+				$('#studentList').append("<option>" + '学生选择' + "</option>")
 			}
 		}));
 		$('#grade').change((() => {
@@ -129,16 +133,18 @@
 				return 
 			}
 			if(grade !== undefined) {
-				
-				$('#classList > option').remove();
+				$('#classList option').remove();
 			}
 			// 如果班级不为空，先清空
 			if(classId !== undefined) {
 				$('#classList > option').remove();
 				$('#studentList > option').remove();
+				$('#classList').append("<option selected= 'selected'>" + '班级选择' + "</option>")
+				$('#studentList').append("<option selected= 'selected'>" + '学生选择' + "</option>")
 			}
-			 grade = $('#grade option:selected').val();
-			this.getClassList(schoolId, grade)
+			  grade = $('#grade option:selected').val();
+			this.getClassList(schoolId, grade);
+			// $('#classList option:first').prop("selected", 'selected');
 		}));
 		$('#classList').change((() => {
 			if(classId !== undefined) {
@@ -146,13 +152,13 @@
 			}
 			if(studentId !== undefined) {
 				$('#studentList > option').remove();
+				$('#studentList').append("<option selected='selected'>" + '学生选择' + "</option>")
 			}
 			 classId = $('#classList option:selected').val();
 			this.getStudentList(classId)
 		}));
 		$('#studentList').change((() => {
 			 studentId = $('#studentList option:selected').val();
-			console.log(studentId)
 		}));
 		$('.btn').click((() => {
 			$.ajax({
@@ -184,6 +190,7 @@
 					var classList = res.data;
 					if(classList.length) {
 						for(var key in classList) {
+							
 							$('#classList').append("<option value='" + classList[key].id + "'>" + classList[key].className + "</option>")
 						}
 					}else {
@@ -206,6 +213,7 @@
 			    url : "https://www.guangliangkongjian.com/lightspace/xcx/allStudent",
 			    success : function(res) {
 					var studentList = res.data;
+					
 					if(studentList.length) {
 						for(var key in studentList) {
 							$('#studentList').append("<option value='" + studentList[key].id + "'>" + studentList[key].name + "</option>")
@@ -214,7 +222,6 @@
 						alert('该班级下无学生');
 						return;
 					}
-					
 			    }
 				
 			});
@@ -224,7 +231,7 @@
 		        	type: 'post',
 		            url : "https://www.guangliangkongjian.com/lightspace/xcx/allSchool",
 		            success : function(res) {
-						console.log(res)
+						// console.log(res)
 						var school = res.data;
 						for(var key in school) {
 							$('#school').append("<option value='" + school[key].id + "'>" + school[key].name + "</option>")
